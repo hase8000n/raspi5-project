@@ -5,8 +5,8 @@ Raspberry Pi 5で動作するPygameゲーム
 
 ゲーム説明:
 - 緑色の丸が表示されます
-- 3-10秒後にランダムなタイミングで赤色に変化します
-- 赤色に変わったらすぐにスペースキーを押してください
+- 3-10秒後にランダムなタイミングで青色に変化します
+- 青色に変わったらすぐにスペースキーを押してください
 - 反応時間（ミリ秒）が表示されます
 
 操作方法:
@@ -28,6 +28,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 200, 0)
+BLUE = (0, 100, 255)
 YELLOW = (255, 255, 0)
 GRAY = (100, 100, 100)
 
@@ -55,24 +56,24 @@ class ReactionGame:
 
     def reset_game(self):
         """ゲームをリセット"""
-        self.state = "waiting"  # waiting, ready, red, result, too_early
+        self.state = "waiting"  # waiting, ready, blue, result, too_early
         self.circle_color = GREEN
         self.wait_time = random.uniform(3.0, 10.0)  # 3-10秒のランダムな待機時間
         self.start_time = time.time()
         self.reaction_time = None
-        self.red_change_time = None
+        self.blue_change_time = None
         self.best_time = getattr(self, 'best_time', None)  # ベストタイムを保持
 
     def handle_space_press(self):
         """スペースキーが押された時の処理"""
         if self.state == "waiting":
-            # 赤になる前に押した場合
+            # 青になる前に押した場合
             self.state = "too_early"
 
-        elif self.state == "red":
-            # 赤になった後に押した場合（正しい反応）
+        elif self.state == "blue":
+            # 青になった後に押した場合（正しい反応）
             current_time = time.time()
-            self.reaction_time = (current_time - self.red_change_time) * 1000  # ミリ秒に変換
+            self.reaction_time = (current_time - self.blue_change_time) * 1000  # ミリ秒に変換
             self.state = "result"
 
             # ベストタイムを更新
@@ -82,12 +83,12 @@ class ReactionGame:
     def update(self):
         """ゲーム状態を更新"""
         if self.state == "waiting":
-            # 待機中: 設定時間が経過したら赤に変更
+            # 待機中: 設定時間が経過したら青に変更
             elapsed_time = time.time() - self.start_time
             if elapsed_time >= self.wait_time:
-                self.circle_color = RED
-                self.state = "red"
-                self.red_change_time = time.time()
+                self.circle_color = BLUE
+                self.state = "blue"
+                self.blue_change_time = time.time()
 
     def draw(self):
         """画面描画"""
@@ -97,7 +98,7 @@ class ReactionGame:
         circle_x = SCREEN_WIDTH // 2
         circle_y = SCREEN_HEIGHT // 2
 
-        if self.state in ["waiting", "red"]:
+        if self.state in ["waiting", "blue"]:
             pygame.draw.circle(self.screen, self.circle_color,
                              (circle_x, circle_y), CIRCLE_RADIUS)
 
@@ -105,7 +106,7 @@ class ReactionGame:
         if self.state == "waiting":
             # 待機中のメッセージ
             title_text = self.font_medium.render("準備してください...", True, WHITE)
-            instruction_text = self.font_small.render("赤色に変わったらスペースキーを押してください", True, GRAY)
+            instruction_text = self.font_small.render("青色に変わったらスペースキーを押してください", True, GRAY)
 
             title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
             instruction_rect = instruction_text.get_rect(center=(SCREEN_WIDTH // 2, 150))
@@ -113,9 +114,9 @@ class ReactionGame:
             self.screen.blit(title_text, title_rect)
             self.screen.blit(instruction_text, instruction_rect)
 
-        elif self.state == "red":
-            # 赤色表示中（反応待ち）
-            instruction_text = self.font_medium.render("今だ！スペースキーを押せ！", True, RED)
+        elif self.state == "blue":
+            # 青色表示中（反応待ち）
+            instruction_text = self.font_medium.render("今だ！スペースキーを押せ！", True, BLUE)
             instruction_rect = instruction_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
             self.screen.blit(instruction_text, instruction_rect)
 
@@ -165,7 +166,7 @@ class ReactionGame:
             warning_rect = warning_text.get_rect(center=(SCREEN_WIDTH // 2, 250))
             self.screen.blit(warning_text, warning_rect)
 
-            instruction_text = self.font_small.render("赤色に変わってから押してください", True, WHITE)
+            instruction_text = self.font_small.render("青色に変わってから押してください", True, WHITE)
             instruction_rect = instruction_text.get_rect(center=(SCREEN_WIDTH // 2, 330))
             self.screen.blit(instruction_text, instruction_rect)
 
