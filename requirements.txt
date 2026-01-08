@@ -1,0 +1,13 @@
+# GPIO制御ライブラリ
+gpiozero==2.0.1
+
+# RPi.GPIO（代替ライブラリ）
+# RPi.GPIO==0.7.1
+
+# センサー関連
+# Adafruit-Blinka==8.20.0
+# adafruit-circuitpython-dht==4.0.0
+
+# その他の便利なライブラリ
+# requests==2.31.0
+# python-dotenv==1.0.0
