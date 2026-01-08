@@ -52,17 +52,17 @@ class ReactionGame:
         self.font_medium = pygame.font.Font(None, 48)
         self.font_small = pygame.font.Font(None, 32)
 
-        self.reset_game()
+        self.best_time = None
+        self.state = "menu"  # 最初はメニュー画面
 
     def reset_game(self):
         """ゲームをリセット"""
-        self.state = "waiting"  # waiting, ready, blue, result, too_early
+        self.state = "waiting"  # menu, waiting, blue, result, too_early
         self.circle_color = GREEN
         self.wait_time = random.uniform(3.0, 10.0)  # 3-10秒のランダムな待機時間
         self.start_time = time.time()
         self.reaction_time = None
         self.blue_change_time = None
-        self.best_time = getattr(self, 'best_time', None)  # ベストタイムを保持
 
     def handle_space_press(self):
         """スペースキーが押された時の処理"""
@@ -103,7 +103,39 @@ class ReactionGame:
                              (circle_x, circle_y), CIRCLE_RADIUS)
 
         # 状態に応じたメッセージ表示
-        if self.state == "waiting":
+        if self.state == "menu":
+            # メニュー画面
+            title_text = self.font_large.render("反射神経測定", True, YELLOW)
+            title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 150))
+            self.screen.blit(title_text, title_rect)
+
+            subtitle_text = self.font_medium.render("Reaction Time Test", True, WHITE)
+            subtitle_rect = subtitle_text.get_rect(center=(SCREEN_WIDTH // 2, 230))
+            self.screen.blit(subtitle_text, subtitle_rect)
+
+            # 説明文
+            desc1 = self.font_small.render("緑色の丸が青色に変わったら", True, GRAY)
+            desc2 = self.font_small.render("素早くスペースキーを押してください", True, GRAY)
+            desc1_rect = desc1.get_rect(center=(SCREEN_WIDTH // 2, 320))
+            desc2_rect = desc2.get_rect(center=(SCREEN_WIDTH // 2, 360))
+            self.screen.blit(desc1, desc1_rect)
+            self.screen.blit(desc2, desc2_rect)
+
+            # スタートボタン風の表示
+            button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 150, 440, 300, 60)
+            pygame.draw.rect(self.screen, GREEN, button_rect)
+            pygame.draw.rect(self.screen, WHITE, button_rect, 3)
+
+            start_text = self.font_medium.render("スタート", True, BLACK)
+            start_rect = start_text.get_rect(center=button_rect.center)
+            self.screen.blit(start_text, start_rect)
+
+            # 操作説明
+            instruction_text = self.font_small.render("スペースキーを押してスタート", True, GRAY)
+            instruction_rect = instruction_text.get_rect(center=(SCREEN_WIDTH // 2, 540))
+            self.screen.blit(instruction_text, instruction_rect)
+
+        elif self.state == "waiting":
             # 待機中のメッセージ
             title_text = self.font_medium.render("準備してください...", True, WHITE)
             instruction_text = self.font_small.render("青色に変わったらスペースキーを押してください", True, GRAY)
@@ -156,7 +188,7 @@ class ReactionGame:
                 self.screen.blit(best_text, best_rect)
 
             # 再プレイの案内
-            retry_text = self.font_small.render("Rキー: もう一度 / ESC: 終了", True, GRAY)
+            retry_text = self.font_small.render("Rキー: もう一度 / Mキー: メニュー / ESC: 終了", True, GRAY)
             retry_rect = retry_text.get_rect(center=(SCREEN_WIDTH // 2, 500))
             self.screen.blit(retry_text, retry_rect)
 
@@ -171,7 +203,7 @@ class ReactionGame:
             self.screen.blit(instruction_text, instruction_rect)
 
             # 再プレイの案内
-            retry_text = self.font_small.render("Rキー: もう一度 / ESC: 終了", True, GRAY)
+            retry_text = self.font_small.render("Rキー: もう一度 / Mキー: メニュー / ESC: 終了", True, GRAY)
             retry_rect = retry_text.get_rect(center=(SCREEN_WIDTH // 2, 500))
             self.screen.blit(retry_text, retry_rect)
 
@@ -191,11 +223,20 @@ class ReactionGame:
                         running = False
 
                     if event.key == pygame.K_SPACE:
-                        self.handle_space_press()
+                        if self.state == "menu":
+                            # メニューからゲーム開始
+                            self.reset_game()
+                        else:
+                            # ゲーム中のスペース処理
+                            self.handle_space_press()
 
                     if event.key == pygame.K_r:
                         if self.state in ["result", "too_early"]:
                             self.reset_game()
+
+                    if event.key == pygame.K_m:
+                        if self.state in ["result", "too_early"]:
+                            self.state = "menu"
 
             self.update()
             self.draw()
