@@ -8,6 +8,9 @@ gpiozero==2.0.1
 # Adafruit-Blinka==8.20.0
 # adafruit-circuitpython-dht==4.0.0
 
+# ゲーム開発ライブラリ
+pygame==2.5.2
+
 # その他の便利なライブラリ
 # requests==2.31.0
 # python-dotenv==1.0.0
