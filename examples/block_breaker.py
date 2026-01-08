@@ -47,6 +47,66 @@ BALL_SPEED_X = 5
 BALL_SPEED_Y = -5
 
 
+class Particle:
+    """花火のパーティクルクラス"""
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+        angle = random.uniform(0, 2 * 3.14159)
+        speed = random.uniform(2, 8)
+        self.vx = speed * random.uniform(-1, 1)
+        self.vy = speed * random.uniform(-1, 1)
+        self.life = random.randint(30, 60)
+        self.max_life = self.life
+        self.size = random.randint(2, 5)
+
+    def update(self):
+        """パーティクルを更新"""
+        self.x += self.vx
+        self.y += self.vy
+        self.vy += 0.2  # 重力
+        self.life -= 1
+
+    def draw(self, screen):
+        """パーティクルを描画"""
+        if self.life > 0:
+            alpha = int(255 * (self.life / self.max_life))
+            color_with_alpha = tuple(min(255, c) for c in self.color)
+            pygame.draw.circle(screen, color_with_alpha, (int(self.x), int(self.y)), self.size)
+
+    def is_alive(self):
+        """パーティクルが生きているか"""
+        return self.life > 0
+
+
+class Firework:
+    """花火クラス"""
+    def __init__(self, x, y):
+        self.particles = []
+        colors = [RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE, WHITE]
+        color = random.choice(colors)
+        # 花火の爆発パーティクルを生成
+        for _ in range(random.randint(30, 50)):
+            self.particles.append(Particle(x, y, color))
+
+    def update(self):
+        """花火を更新"""
+        for particle in self.particles:
+            particle.update()
+        # 死んだパーティクルを削除
+        self.particles = [p for p in self.particles if p.is_alive()]
+
+    def draw(self, screen):
+        """花火を描画"""
+        for particle in self.particles:
+            particle.draw(screen)
+
+    def is_alive(self):
+        """花火が生きているか"""
+        return len(self.particles) > 0
+
+
 class Paddle:
     """パドルクラス"""
     def __init__(self):
@@ -152,6 +212,8 @@ class Game:
         self.lives = 3
         self.game_over = False
         self.game_won = False
+        self.fireworks = []
+        self.firework_timer = 0
 
     def create_blocks(self):
         """ブロックを生成"""
@@ -235,6 +297,10 @@ class Game:
 
         # ゲームクリア
         if self.game_won:
+            # 花火の描画
+            for firework in self.fireworks:
+                firework.draw(self.screen)
+
             win_text = self.font.render("YOU WIN!", True, GREEN)
             score_text = self.small_font.render(f"Final Score: {self.score}", True, WHITE)
             restart_text = self.small_font.render("Press R to Restart or ESC to Quit", True, WHITE)
@@ -285,6 +351,21 @@ class Game:
                 self.handle_input()
                 self.ball.move(self.paddle)
                 self.check_collisions()
+
+            # 勝利時の花火エフェクト
+            if self.game_won:
+                # 花火を定期的に生成
+                self.firework_timer += 1
+                if self.firework_timer % 15 == 0:  # 15フレームごとに花火を生成
+                    x = random.randint(100, SCREEN_WIDTH - 100)
+                    y = random.randint(100, SCREEN_HEIGHT - 200)
+                    self.fireworks.append(Firework(x, y))
+
+                # 花火を更新
+                for firework in self.fireworks:
+                    firework.update()
+                # 死んだ花火を削除
+                self.fireworks = [f for f in self.fireworks if f.is_alive()]
 
             self.draw()
             self.clock.tick(FPS)
