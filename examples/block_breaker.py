@@ -103,9 +103,14 @@ class Ball:
             self.rect.y += self.speed_y
 
             # 壁との衝突判定
-            if self.rect.left <= 0 or self.rect.right >= SCREEN_WIDTH:
+            if self.rect.left <= 0:
+                self.rect.left = 0
+                self.speed_x *= -1
+            if self.rect.right >= SCREEN_WIDTH:
+                self.rect.right = SCREEN_WIDTH
                 self.speed_x *= -1
             if self.rect.top <= 0:
+                self.rect.top = 0
                 self.speed_y *= -1
 
     def draw(self, screen):
