@@ -48,9 +48,24 @@ class ReactionGame:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("反射神経測定ゲーム - Reaction Time Test")
         self.clock = pygame.time.Clock()
-        self.font_large = pygame.font.Font(None, 72)
-        self.font_medium = pygame.font.Font(None, 48)
-        self.font_small = pygame.font.Font(None, 32)
+
+        # 日本語対応フォントを使用
+        try:
+            # Raspberry Pi OSの標準日本語フォントを試す
+            self.font_large = pygame.font.Font("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf", 72)
+            self.font_medium = pygame.font.Font("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf", 48)
+            self.font_small = pygame.font.Font("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf", 32)
+        except:
+            try:
+                # 別の日本語フォントを試す
+                self.font_large = pygame.font.Font("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", 72)
+                self.font_medium = pygame.font.Font("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", 48)
+                self.font_small = pygame.font.Font("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", 32)
+            except:
+                # システムのデフォルトフォントを使用
+                self.font_large = pygame.font.SysFont("notosanscjk", 72)
+                self.font_medium = pygame.font.SysFont("notosanscjk", 48)
+                self.font_small = pygame.font.SysFont("notosanscjk", 32)
 
         self.best_time = None
         self.state = "menu"  # 最初はメニュー画面
