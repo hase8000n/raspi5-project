@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=反射神経測定ゲーム
+Comment=Reaction Time Test Game
+Exec=/home/pi/raspi5-project/scripts/launch_reaction_test.sh
+Icon=applications-games
+Terminal=false
+Categories=Game;
+Keywords=game;reaction;test;

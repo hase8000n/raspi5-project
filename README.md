@@ -93,6 +93,31 @@ python examples/reaction_test.py
 - 300-400ms：普通
 - 400ms以上：もう少し頑張ろう
 
+## ゲームランチャー
+
+デスクトップからクリックでゲームを起動できます。
+
+### セットアップ方法
+
+1. スクリプトに実行権限を付与：
+```bash
+chmod +x scripts/launch_reaction_test.sh
+```
+
+2. デスクトップエントリーファイルをコピー：
+```bash
+cp scripts/ReactionTest.desktop ~/.local/share/applications/
+chmod +x ~/.local/share/applications/ReactionTest.desktop
+```
+
+3. デスクトップにショートカットを作成（オプション）：
+```bash
+cp scripts/ReactionTest.desktop ~/Desktop/
+chmod +x ~/Desktop/ReactionTest.desktop
+```
+
+これで、アプリケーションメニューやデスクトップから「反射神経測定ゲーム」をクリックして起動できます！
+
 ## 開発環境
 
 - Raspberry Pi 5
