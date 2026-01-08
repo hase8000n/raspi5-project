@@ -99,24 +99,24 @@ python examples/reaction_test.py
 
 ### セットアップ方法
 
-1. スクリプトに実行権限を付与：
+1. デスクトップにショートカットを作成：
 ```bash
-chmod +x scripts/launch_reaction_test.sh
+cd ~/raspi5-project
+cp scripts/ReactionTest.desktop ~/Desktop/
+chmod +x ~/Desktop/ReactionTest.desktop
 ```
 
-2. デスクトップエントリーファイルをコピー：
+2. アプリケーションメニューにも追加（オプション）：
 ```bash
 cp scripts/ReactionTest.desktop ~/.local/share/applications/
 chmod +x ~/.local/share/applications/ReactionTest.desktop
 ```
 
-3. デスクトップにショートカットを作成（オプション）：
-```bash
-cp scripts/ReactionTest.desktop ~/Desktop/
-chmod +x ~/Desktop/ReactionTest.desktop
-```
+3. デスクトップ上のアイコンを右クリック → 「信頼して起動」を選択
 
-これで、アプリケーションメニューやデスクトップから「反射神経測定ゲーム」をクリックして起動できます！
+これで、デスクトップやアプリケーションメニューから「Reaction Time Test」をクリックして起動できます！
+
+**注意**: 初回起動時は「信頼して起動」を選択する必要があります。
 
 ## 開発環境
 

@@ -1,9 +1,11 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=反射神経測定ゲーム
-Comment=Reaction Time Test Game
-Exec=/home/pi/raspi5-project/scripts/launch_reaction_test.sh
+Name=Reaction Time Test
+Name[ja]=反射神経測定ゲーム
+Comment=Test your reaction speed
+Comment[ja]=反応速度を測定するゲーム
+Exec=bash -c "cd ~/raspi5-project && source venv/bin/activate && python examples/reaction_test.py"
 Icon=applications-games
 Terminal=false
 Categories=Game;
